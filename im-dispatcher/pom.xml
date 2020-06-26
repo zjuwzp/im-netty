@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zhss.im</groupId>
-    <artifactId>im-gateway-tcp</artifactId>
+    <artifactId>im-dispatcher</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>

@@ -33,3 +33,11 @@ ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
 socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
 socketChannel.pipeline().addLast(new StringDecoder());     //会把收到的消息直接转为String，而不是ByteBuf
 ```
+
+### 第二次提交
+
+1、引入分发系统
+
+2、引入protobuf
+
+3、接入系统和所有分发系统通过netty建立连接（通过netty）
