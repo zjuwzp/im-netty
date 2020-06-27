@@ -14,5 +14,16 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.39.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.zhss.im</groupId>
+            <artifactId>im-protocol</artifactId>
+            <version>1.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zhss.im</groupId>
+            <artifactId>im-common</artifactId>
+            <version>1.7-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

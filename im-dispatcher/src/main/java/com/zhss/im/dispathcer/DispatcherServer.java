@@ -39,14 +39,15 @@ public class DispatcherServer {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
-                            socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
-                            socketChannel.pipeline().addLast(new StringDecoder());
+                            socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(4096, delimiter));
                             socketChannel.pipeline().addLast(new DispatcherHandler());
                         }
 
                     });
 
             ChannelFuture channelFuture = server.bind(PORT).sync();
+
+            System.out.println("分发系统已经启动......");
 
             channelFuture.channel().closeFuture().sync();
         } catch(Exception e) {

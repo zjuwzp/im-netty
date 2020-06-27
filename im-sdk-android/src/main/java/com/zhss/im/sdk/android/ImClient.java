@@ -1,5 +1,8 @@
 package com.zhss.im.sdk.android;
 
+import com.zhss.im.common.Constants;
+import com.zhss.im.common.Request;
+import com.zhss.im.protocol.AuthenticateRequestProto;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -41,22 +44,19 @@ public class ImClient {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
-                        socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
-                        socketChannel.pipeline().addLast(new StringDecoder());
+                        socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(4096, delimiter));
                         socketChannel.pipeline().addLast(new ImClientHandler());
                     }
                 });
 
-        System.out.println("完成Netty客户端的配置");
-
         ChannelFuture channelFuture = client.connect(host, port); // 尝试发起连接
-        System.out.println("发起对TCP接入系统的连接");
+        System.out.println("发起对TCP接入系统的连接......");
 
         channelFuture.addListener(new ChannelFutureListener() { // 给异步化的连接请求加入监听器
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 if(channelFuture.isSuccess()) {
                     socketChannel = (SocketChannel) channelFuture.channel();
-                    System.out.println("跟TCP接入系统完成长连接的建立");
+                    System.out.println("已经跟TCP接入系统建立连接，TCP接入系统地址为：" + socketChannel);
                 } else {
                     channelFuture.channel().close();
                     threadGroup.shutdownGracefully();
@@ -69,32 +69,30 @@ public class ImClient {
 
     /**
      * 发起token认证
-     * @param userId
+     * @param uid
      * @param token
      * @throws Exception
      */
-    public void authenticate(String userId, String token) throws Exception {
-        byte[] messageBytes = ("发起用户认证|" + userId + "|" + token + "$_").getBytes();
-        ByteBuf messageBuffer = Unpooled.buffer(messageBytes.length);
-        messageBuffer.writeBytes(messageBytes);
-        socketChannel.writeAndFlush(messageBuffer);
+    public void authenticate(String uid, String token) throws Exception {
+        // 封装认证请求的消息体
+        AuthenticateRequestProto.AuthenticateRequest.Builder builder =
+                AuthenticateRequestProto.AuthenticateRequest.newBuilder();
+        builder.setUid(uid);
+        builder.setToken(token);
+        builder.setTimestamp(System.currentTimeMillis());
+        AuthenticateRequestProto.AuthenticateRequest authenticateRequest = builder.build();
 
-        System.out.println("向TCP接入系统发起用户认证请求");
-    }
+        // 封装一个完整的请求消息
+        Request request = new Request(
+                Constants.APP_SDK_VERSION_1,
+                Constants.REQUEST_TYPE_AUTHENTICATE,
+                Constants.SEQUENCE_DEFAULT,
+                authenticateRequest.toByteArray());
 
-    /**
-     * 向机器发送消息过去
-     * @param message
-     * @throws Exception
-     */
-    public void send(String userId, String message) throws Exception {
-        byte[] messageBytes = (message + "|" + userId + "$_").getBytes();
-        ByteBuf messageBuffer = Unpooled.buffer(messageBytes.length);
-        messageBuffer.writeBytes(messageBytes);
-        socketChannel.isWritable();
-        socketChannel.writeAndFlush(messageBuffer);
-
-        System.out.println("向TCP接入系统发送第一条消息，推送给test002用户");
+        System.out.println("向TCP接入系统发起用户认证请求，请求大小为：" + authenticateRequest.toByteArray().length);
+        
+        // 将认证请求发送给TCP接入系统
+        socketChannel.writeAndFlush(request.getBuffer());
     }
 
     /**

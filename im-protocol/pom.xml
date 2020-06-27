@@ -6,7 +6,7 @@
 
     <groupId>com.zhss.im</groupId>
     <artifactId>im-protocol</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>

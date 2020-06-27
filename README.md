@@ -41,3 +41,11 @@ socketChannel.pipeline().addLast(new StringDecoder());     //会把收到的消�
 2、引入protobuf
 
 3、接入系统和所有分发系统通过netty建立连接（通过netty）
+
+### 第三次提交
+
+1、实现了app sdk、接入系统、分发系统的双向通信
+
+2、认证流程
+
+3、增加了一个common工程

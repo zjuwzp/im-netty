@@ -13,6 +13,7 @@
         <module>im-sdk-android</module>
         <module>im-dispatcher</module>
         <module>im-protocol</module>
+        <module>im-common</module>
     </modules>
 
 

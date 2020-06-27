@@ -35,6 +35,31 @@ public final class AuthenticateResponseProto {
      */
     com.google.protobuf.ByteString
         getErrorMessageBytes();
+
+    /**
+     * <code>string uid = 4;</code>
+     */
+    String getUid();
+    /**
+     * <code>string uid = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getUidBytes();
+
+    /**
+     * <code>string token = 5;</code>
+     */
+    String getToken();
+    /**
+     * <code>string token = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getTokenBytes();
+
+    /**
+     * <code>int64 timestamp = 6;</code>
+     */
+    long getTimestamp();
   }
   /**
    * Protobuf type {@code AuthenticateResponse}
@@ -50,6 +75,8 @@ public final class AuthenticateResponseProto {
     }
     private AuthenticateResponse() {
       errorMessage_ = "";
+      uid_ = "";
+      token_ = "";
     }
 
     @Override
@@ -96,6 +123,23 @@ public final class AuthenticateResponseProto {
               String s = input.readStringRequireUtf8();
 
               errorMessage_ = s;
+              break;
+            }
+            case 34: {
+              String s = input.readStringRequireUtf8();
+
+              uid_ = s;
+              break;
+            }
+            case 42: {
+              String s = input.readStringRequireUtf8();
+
+              token_ = s;
+              break;
+            }
+            case 48: {
+
+              timestamp_ = input.readInt64();
               break;
             }
             default: {
@@ -182,6 +226,83 @@ public final class AuthenticateResponseProto {
       }
     }
 
+    public static final int UID_FIELD_NUMBER = 4;
+    private volatile Object uid_;
+    /**
+     * <code>string uid = 4;</code>
+     */
+    public String getUid() {
+      Object ref = uid_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        uid_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string uid = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getUidBytes() {
+      Object ref = uid_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        uid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TOKEN_FIELD_NUMBER = 5;
+    private volatile Object token_;
+    /**
+     * <code>string token = 5;</code>
+     */
+    public String getToken() {
+      Object ref = token_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        token_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string token = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTokenBytes() {
+      Object ref = token_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (String) ref);
+        token_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TIMESTAMP_FIELD_NUMBER = 6;
+    private long timestamp_;
+    /**
+     * <code>int64 timestamp = 6;</code>
+     */
+    public long getTimestamp() {
+      return timestamp_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -205,6 +326,15 @@ public final class AuthenticateResponseProto {
       if (!getErrorMessageBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, errorMessage_);
       }
+      if (!getUidBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, uid_);
+      }
+      if (!getTokenBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, token_);
+      }
+      if (timestamp_ != 0L) {
+        output.writeInt64(6, timestamp_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -224,6 +354,16 @@ public final class AuthenticateResponseProto {
       }
       if (!getErrorMessageBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, errorMessage_);
+      }
+      if (!getUidBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, uid_);
+      }
+      if (!getTokenBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, token_);
+      }
+      if (timestamp_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, timestamp_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -246,6 +386,12 @@ public final class AuthenticateResponseProto {
           != other.getErrorCode()) return false;
       if (!getErrorMessage()
           .equals(other.getErrorMessage())) return false;
+      if (!getUid()
+          .equals(other.getUid())) return false;
+      if (!getToken()
+          .equals(other.getToken())) return false;
+      if (getTimestamp()
+          != other.getTimestamp()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -263,6 +409,13 @@ public final class AuthenticateResponseProto {
       hash = (53 * hash) + getErrorCode();
       hash = (37 * hash) + ERRORMESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getErrorMessage().hashCode();
+      hash = (37 * hash) + UID_FIELD_NUMBER;
+      hash = (53 * hash) + getUid().hashCode();
+      hash = (37 * hash) + TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getToken().hashCode();
+      hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getTimestamp());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -402,6 +555,12 @@ public final class AuthenticateResponseProto {
 
         errorMessage_ = "";
 
+        uid_ = "";
+
+        token_ = "";
+
+        timestamp_ = 0L;
+
         return this;
       }
 
@@ -431,6 +590,9 @@ public final class AuthenticateResponseProto {
         result.status_ = status_;
         result.errorCode_ = errorCode_;
         result.errorMessage_ = errorMessage_;
+        result.uid_ = uid_;
+        result.token_ = token_;
+        result.timestamp_ = timestamp_;
         onBuilt();
         return result;
       }
@@ -488,6 +650,17 @@ public final class AuthenticateResponseProto {
         if (!other.getErrorMessage().isEmpty()) {
           errorMessage_ = other.errorMessage_;
           onChanged();
+        }
+        if (!other.getUid().isEmpty()) {
+          uid_ = other.uid_;
+          onChanged();
+        }
+        if (!other.getToken().isEmpty()) {
+          token_ = other.token_;
+          onChanged();
+        }
+        if (other.getTimestamp() != 0L) {
+          setTimestamp(other.getTimestamp());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -638,6 +811,170 @@ public final class AuthenticateResponseProto {
         onChanged();
         return this;
       }
+
+      private Object uid_ = "";
+      /**
+       * <code>string uid = 4;</code>
+       */
+      public String getUid() {
+        Object ref = uid_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          uid_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>string uid = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUidBytes() {
+        Object ref = uid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          uid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string uid = 4;</code>
+       */
+      public Builder setUid(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        uid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string uid = 4;</code>
+       */
+      public Builder clearUid() {
+        
+        uid_ = getDefaultInstance().getUid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string uid = 4;</code>
+       */
+      public Builder setUidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        uid_ = value;
+        onChanged();
+        return this;
+      }
+
+      private Object token_ = "";
+      /**
+       * <code>string token = 5;</code>
+       */
+      public String getToken() {
+        Object ref = token_;
+        if (!(ref instanceof String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          token_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      /**
+       * <code>string token = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTokenBytes() {
+        Object ref = token_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (String) ref);
+          token_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string token = 5;</code>
+       */
+      public Builder setToken(
+          String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        token_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string token = 5;</code>
+       */
+      public Builder clearToken() {
+        
+        token_ = getDefaultInstance().getToken();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string token = 5;</code>
+       */
+      public Builder setTokenBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        token_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long timestamp_ ;
+      /**
+       * <code>int64 timestamp = 6;</code>
+       */
+      public long getTimestamp() {
+        return timestamp_;
+      }
+      /**
+       * <code>int64 timestamp = 6;</code>
+       */
+      public Builder setTimestamp(long value) {
+        
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 timestamp = 6;</code>
+       */
+      public Builder clearTimestamp() {
+        
+        timestamp_ = 0L;
+        onChanged();
+        return this;
+      }
       @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -705,10 +1042,12 @@ public final class AuthenticateResponseProto {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n#im/proto/AuthenticateResponse.proto\"O\n" +
+      "\n#im/proto/AuthenticateResponse.proto\"~\n" +
       "\024AuthenticateResponse\022\016\n\006status\030\001 \001(\005\022\021\n" +
-      "\terrorCode\030\002 \001(\005\022\024\n\014errorMessage\030\003 \001(\tB\033" +
-      "B\031AuthenticateResponseProtob\006proto3"
+      "\terrorCode\030\002 \001(\005\022\024\n\014errorMessage\030\003 \001(\t\022\013" +
+      "\n\003uid\030\004 \001(\t\022\r\n\005token\030\005 \001(\t\022\021\n\ttimestamp\030" +
+      "\006 \001(\003B\033B\031AuthenticateResponseProtob\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -719,7 +1058,7 @@ public final class AuthenticateResponseProto {
     internal_static_AuthenticateResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_AuthenticateResponse_descriptor,
-        new String[] { "Status", "ErrorCode", "ErrorMessage", });
+        new String[] { "Status", "ErrorCode", "ErrorMessage", "Uid", "Token", "Timestamp", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
