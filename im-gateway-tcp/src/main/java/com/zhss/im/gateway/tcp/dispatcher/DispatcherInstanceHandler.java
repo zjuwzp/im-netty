@@ -16,6 +16,15 @@ import io.netty.channel.socket.SocketChannel;
 public class DispatcherInstanceHandler extends ChannelInboundHandlerAdapter {
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        SocketChannel channel = (SocketChannel) ctx.channel();
+        String dispatcherChannelId = channel.remoteAddress().getHostName() + ":"
+                + channel.remoteAddress().getPort();
+        DispatcherInstanceManager dispatcherInstanceManager = DispatcherInstanceManager.getInstance();
+        dispatcherInstanceManager.removeDispatcherInstance(dispatcherChannelId);
+    }
+
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = new Message((ByteBuf) msg);
 

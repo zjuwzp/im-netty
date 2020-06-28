@@ -2,6 +2,7 @@ package com.zhss.im.dispathcer;
 
 import io.netty.channel.socket.SocketChannel;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -33,7 +34,7 @@ public class GatewayInstanceManager {
     /**
      * 接入系统的实例列表
      */
-    private ConcurrentHashMap<String, SocketChannel> gatewayInstances =
+    private Map<String, SocketChannel> gatewayInstances =
             new ConcurrentHashMap<String, SocketChannel>();
 
     /**

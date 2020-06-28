@@ -10,6 +10,17 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public class ImClientHandler extends ChannelInboundHandlerAdapter {
 
+    private ImClient client;
+
+    public ImClientHandler(ImClient client) {
+        this.client = client;
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        client.reconnect();
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 服务端发送过来的消息就是在这里收到的

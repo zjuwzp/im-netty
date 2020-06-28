@@ -49,3 +49,21 @@ socketChannel.pipeline().addLast(new StringDecoder());     //会把收到的消�
 2、认证流程
 
 3、增加了一个common工程
+
+### 第四次提交
+
+1、加入了redis、mysql的jdbc、kafka的示例操作代码
+
+2、分发系统宕机
+
+接入系统维护了一个所有分发系统的map，分发系统宕机，直接在map中把对应实例删掉就好。
+
+3、接入系统宕机
+
+1）分发系统感知到，会在维护的实例列表中把对应实例删掉。
+
+2）app sdk感知到，会重新选一台接入系统去连接。（会重新认证）
+
+4、app sdk宕机
+
+1）接入系统感知到，会把本地和redis中的session都删掉

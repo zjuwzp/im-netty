@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
+import redis.clients.jedis.Jedis;
 
 public class GatewayTcpHandler extends ChannelInboundHandlerAdapter {
 
@@ -24,7 +25,15 @@ public class GatewayTcpHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel socketChannel = (SocketChannel) ctx.channel();
+        String channelId = socketChannel.remoteAddress().getHostName() + ":"
+                + socketChannel.remoteAddress().getPort();
+
         SessionManager sessionManager = SessionManager.getInstance();
+
+        JedisManager jedisManager = JedisManager.getInstance();
+        Jedis jedis = jedisManager.getJedis();
+        jedis.del("session_" + sessionManager.getUidByChannelId(channelId));
+
         sessionManager.removeSession(socketChannel);
 
         System.out.println("检测到客户端的连接断开，删除其连接缓存：" + socketChannel.remoteAddress().toString());

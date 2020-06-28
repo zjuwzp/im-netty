@@ -45,7 +45,7 @@ public class ImClient {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
                         socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(4096, delimiter));
-                        socketChannel.pipeline().addLast(new ImClientHandler());
+                        socketChannel.pipeline().addLast(new ImClientHandler(ImClient.this));
                     }
                 });
 
@@ -65,6 +65,17 @@ public class ImClient {
         });
 
         channelFuture.sync();
+    }
+
+    public void reconnect() throws Exception {
+        // 重新调用iplist服务获取一个其他的接入系统的实例的地址
+        String uid = "";
+        String token = "";
+        String host = "";
+        int port = -1;
+
+        connect(host, port);
+        authenticate(uid, token);
     }
 
     /**

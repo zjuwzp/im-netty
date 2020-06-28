@@ -40,6 +40,15 @@ public class SessionManager {
     private ConcurrentHashMap<String, String> channelId2uid = new ConcurrentHashMap<String, String>();
 
     /**
+     * 通过channelId获取uid
+     * @param channelId
+     * @return
+     */
+    public String getUidByChannelId(String channelId) {
+        return channelId2uid.get(channelId);
+    }
+
+    /**
      * 添加一个建立好连接的客户端
      * @param uid
      * @param socketChannel

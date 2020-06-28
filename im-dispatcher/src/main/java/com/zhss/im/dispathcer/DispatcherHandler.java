@@ -10,6 +10,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
+import redis.clients.jedis.Jedis;
 
 /**
  * 分发系统Netty服务器事件处理类
@@ -77,13 +78,18 @@ public class DispatcherHandler extends ChannelInboundHandlerAdapter {
                             + socketChannel.remoteAddress().getPort();
 
                     // 其实在这里应该把session信息写入Redis的
-                    // key=uid，value={
-                    //      'token':'',
-                    //      'timestamp':'',
-                    //      'isAuthenticated':'true',
-                    //      'authenticateTimestamp':'....',
-                    //      'gatewayChannelId': ''
-                    // }
+                    String sessionKey = "session_" + authenticateRequest.getUid();
+                    String sessionValue= "{"
+                        + "'token':'" + authenticateRequest.getToken() + "',"
+                        + "'timestamp':" + authenticateRequest.getTimestamp() + ","
+                        + "'isAuthenticated':'true',"
+                        + "'authenticateTimestamp':" + System.currentTimeMillis() + ","
+                        + "'gatewayChannelId': '" + gatewayChannelId + "'"
+                     + "}";
+
+                    JedisManager jedisManager = JedisManager.getInstance();
+                    Jedis jedis = jedisManager.getJedis();
+                    jedis.set(sessionKey, sessionValue);
 
                     System.out.println("在Redis中写入分布式Session......");
                 }

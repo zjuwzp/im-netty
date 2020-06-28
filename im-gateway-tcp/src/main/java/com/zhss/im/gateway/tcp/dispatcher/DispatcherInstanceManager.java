@@ -10,9 +10,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -57,16 +56,31 @@ public class DispatcherInstanceManager {
     /**
      * 分发系统实例
      */
-    private List<DispatcherInstance> dispatcherInstances = new CopyOnWriteArrayList<DispatcherInstance>();
+    private Map<String, DispatcherInstance> dispatcherInstances =
+            new ConcurrentHashMap<String, DispatcherInstance>();
 
     /**
      * 随机选择一个分发系统实例
      * @return
      */
     public DispatcherInstance chooseDispatcherInstance() {
+        List<DispatcherInstance> dispatcherInstanceList =
+                new ArrayList<DispatcherInstance>();
+        for(DispatcherInstance dispatcherInstance : dispatcherInstances.values()) {
+            dispatcherInstanceList.add(dispatcherInstance);
+        }
+
         Random random = new Random();
-        int index = random.nextInt(dispatcherInstances.size());
-        return dispatcherInstances.get(index);
+        int index = random.nextInt(dispatcherInstanceList.size());
+        return dispatcherInstanceList.get(index);
+    }
+
+    /**
+     * 删除一个断开连接的分发系统实例
+     * @param dispathcerChannelId
+     */
+    public void removeDispatcherInstance(String dispathcerChannelId) {
+        dispatcherInstances.remove(dispathcerChannelId);
     }
 
     /**
@@ -113,7 +127,12 @@ public class DispatcherInstanceManager {
                 if(channelFuture.isSuccess()) {
                     DispatcherInstance dispatcherInstance = new DispatcherInstance(
                             (SocketChannel) channelFuture.channel());
-                    dispatcherInstances.add(dispatcherInstance);
+
+                    SocketChannel channel = (SocketChannel) channelFuture.channel();
+                    String dispatcherChannelId = channel.remoteAddress().getHostName() + ":"
+                            + channel.remoteAddress().getPort();
+
+                    dispatcherInstances.put(dispatcherChannelId, dispatcherInstance);
                     System.out.println("已经跟分发系统建立连接，分发系统地址为：" + channelFuture.channel().remoteAddress());
                 } else {
                     channelFuture.channel().close();
