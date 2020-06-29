@@ -23,6 +23,22 @@ public class Constants {
      */
     public static final int REQUEST_TYPE_AUTHENTICATE = 1;
     /**
+     * 请求类型：发送单聊消息
+     */
+    public static final int REQUEST_TYPE_SEND_MESSAGE = 2;
+    /**
+     * 请求类型：发送群聊消息
+     */
+    public static final int REQUEST_TYPE_SEND_GROUP_MESSAGE = 3;
+    /**
+     * 请求类型：拉取离线消息
+     */
+    public static final int REQUEST_TYPE_FETCH_OFFLINE_MESSAGES = 4;
+    /**
+     * 请求类型：推送消息
+     */
+    public static final int REQUEST_TYPE_PUSH_MESSAGE = 5;
+    /**
      * 消息顺序的默认值
      */
     public static final int SEQUENCE_DEFAULT = 1;

@@ -3,7 +3,10 @@ package com.zhss.im.gateway.tcp;
 import com.zhss.im.common.Constants;
 import com.zhss.im.common.Message;
 import com.zhss.im.common.Request;
+import com.zhss.im.common.Response;
 import com.zhss.im.protocol.AuthenticateRequestProto;
+import com.zhss.im.protocol.MessagePushResponseProto;
+import com.zhss.im.protocol.MessageSendRequestProto;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -58,6 +61,7 @@ public class GatewayTcpHandler extends ChannelInboundHandlerAdapter {
         if(message.getMessageType() == Constants.MESSAGE_TYPE_REQUEST) {
             Request request = message.toRequest();
 
+            // 如果是认证请求
             if(request.getRequestType() == Constants.REQUEST_TYPE_AUTHENTICATE) {
                 // 将消息体反序列化为认证请求
                 AuthenticateRequestProto.AuthenticateRequest authenticateRequest =
@@ -68,6 +72,24 @@ public class GatewayTcpHandler extends ChannelInboundHandlerAdapter {
                 // 设置一下本地Session，维护uid和session映射关系，维护channelId和uid的关系
                 SessionManager sessionManager = SessionManager.getInstance();
                 sessionManager.addSession(authenticateRequest.getUid(), (SocketChannel) ctx.channel());
+            }
+            // 如果是发送单聊消息的请求
+            else if(request.getRequestType() == Constants.REQUEST_TYPE_SEND_MESSAGE) {
+                System.out.println("接收到客户端发送过来的单聊消息......");
+                request = new Request(
+                        request.getAppSdkVersion(),
+                        request.getRequestType(),
+                        request.getSequence(),
+                        request.getBody());
+                requestHandler.sendMessage(request);
+            }
+        } else if(message.getMessageType() == Constants.MESSAGE_TYPE_RESPONSE) {
+            Response response = message.toResponse();
+
+            if(response.getRequestType() == Constants.REQUEST_TYPE_PUSH_MESSAGE) {
+                System.out.println("接收到客户端返回的消息推送响应......");
+                response = new Response(response, response.getBody());
+                requestHandler.pushMessageResponse(response);
             }
         }
     }

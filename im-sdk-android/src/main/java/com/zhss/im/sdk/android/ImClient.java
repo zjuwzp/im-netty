@@ -3,6 +3,7 @@ package com.zhss.im.sdk.android;
 import com.zhss.im.common.Constants;
 import com.zhss.im.common.Request;
 import com.zhss.im.protocol.AuthenticateRequestProto;
+import com.zhss.im.protocol.MessageSendRequestProto;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -11,7 +12,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
 
 // 如果你的APP要跟一台机器建立一个连接
 // 此时就可以新建一个ImClient，这个Client就代表跟机器的一个连接就可以了
@@ -23,6 +23,8 @@ public class ImClient {
     private Bootstrap client;
     // 代表的是客户端APP跟TCP接入系统的某台机器的长连接
     private SocketChannel socketChannel;
+    // 是否完成认证后的连接
+    private volatile Boolean isConnected = false;
 
     /**
      * 跟机器建立连接
@@ -104,6 +106,10 @@ public class ImClient {
         
         // 将认证请求发送给TCP接入系统
         socketChannel.writeAndFlush(request.getBuffer());
+
+        while(!isConnected) {
+            Thread.sleep(100);
+        }
     }
 
     /**
@@ -113,6 +119,39 @@ public class ImClient {
     public void close() throws Exception {
         this.socketChannel.close();
         this.threadGroup.shutdownGracefully();
+    }
+
+    /**
+     * 发送单聊消息
+     * @param senderId
+     * @param receiverId
+     * @param content
+     */
+    public void sendMessage(String senderId, String receiverId, String content) {
+        MessageSendRequestProto.MessageSendRequest.Builder builder =
+                MessageSendRequestProto.MessageSendRequest.newBuilder();
+        builder.setSenderId(senderId);
+        builder.setReceiverId(receiverId);
+        builder.setContent(content);
+        MessageSendRequestProto.MessageSendRequest messageSendRequest = builder.build();
+
+        Request request = new Request(
+                Constants.APP_SDK_VERSION_1,
+                Constants.REQUEST_TYPE_SEND_MESSAGE,
+                Constants.SEQUENCE_DEFAULT,
+                messageSendRequest.toByteArray()
+        );
+
+        System.out.println("客户端向接入系统发送一条单聊消息，" + messageSendRequest);
+
+        socketChannel.writeAndFlush(request.getBuffer());
+    }
+
+    /**
+     * 设置为已经建立好连接
+     */
+    public void connected() {
+        this.isConnected = true;
     }
 
 }

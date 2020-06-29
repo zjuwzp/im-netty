@@ -2,9 +2,12 @@ package com.zhss.im.gateway.tcp.dispatcher;
 
 import com.zhss.im.common.Constants;
 import com.zhss.im.common.Message;
+import com.zhss.im.common.Request;
 import com.zhss.im.common.Response;
 import com.zhss.im.gateway.tcp.SessionManager;
 import com.zhss.im.protocol.AuthenticateResponseProto;
+import com.zhss.im.protocol.MessagePushRequestProto;
+import com.zhss.im.protocol.MessageSendResponseProto;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -50,6 +53,41 @@ public class DispatcherInstanceHandler extends ChannelInboundHandlerAdapter {
                 session.writeAndFlush(new Response(response, authenticateResponse.toByteArray()).getBuffer());
 
                 System.out.println("将响应发送到客户端，uid=" + uid + "，客户端地址为：" + session);
+            } else if(response.getRequestType() == Constants.REQUEST_TYPE_SEND_MESSAGE) {
+                // 我们此时必须要知道这条消息的发送人是谁，senderId，才可以找到那个对应的客户端的长连接
+                MessageSendResponseProto.MessageSendResponse messageSendResponse =
+                        MessageSendResponseProto.MessageSendResponse.parseFrom(response.getBody());
+                String senderId = messageSendResponse.getSenderId();
+
+                response = new Response(response, messageSendResponse.toByteArray());
+
+                SessionManager sessionManager = SessionManager.getInstance();
+                SocketChannel client = sessionManager.getSession(senderId);
+                client.writeAndFlush(response.getBuffer());
+
+                System.out.println("收到单聊消息的响应：" + messageSendResponse +
+                        "，并且转发给客户端......");
+            }
+        } else if(message.getMessageType() == Constants.MESSAGE_TYPE_REQUEST) {
+            Request request = message.toRequest();
+
+            if(request.getRequestType() == Constants.REQUEST_TYPE_PUSH_MESSAGE) {
+                MessagePushRequestProto.MessagePushRequest messagePushRequest =
+                        MessagePushRequestProto.MessagePushRequest.parseFrom(request.getBody());
+                String receiverId = messagePushRequest.getReceiverId();
+
+                request = new Request(
+                        request.getAppSdkVersion(),
+                        request.getRequestType(),
+                        request.getSequence(),
+                        request.getBody()
+                );
+
+                SessionManager sessionManager = SessionManager.getInstance();
+                SocketChannel session = sessionManager.getSession(receiverId);
+                session.writeAndFlush(request.getBuffer());
+
+                System.out.println("转发消息推送给客户端：" + messagePushRequest);
             }
         }
     }

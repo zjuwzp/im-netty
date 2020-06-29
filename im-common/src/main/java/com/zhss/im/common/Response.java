@@ -32,4 +32,8 @@ public class Response extends Message {
         super(headerLength, appSdkVersion, messageType, requestType, sequence, bodyLength, body, buffer);
     }
 
+    public Response(int appSdkVersion, int messageType, int requestType, int sequence, byte[] body) {
+        super(appSdkVersion, messageType, requestType, sequence, body);
+    }
+
 }

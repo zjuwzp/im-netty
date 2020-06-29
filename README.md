@@ -67,3 +67,17 @@ socketChannel.pipeline().addLast(new StringDecoder());     //会把收到的消�
 4、app sdk宕机
 
 1）接入系统感知到，会把本地和redis中的session都删掉
+
+### 第五次提交
+
+1、接入系统将请求数据转换成json放到kafka中。
+
+2、jdbc插入数据时如何返回自增组件，需要注意。
+
+### 第六次提交
+
+1、完成了单聊消息的全流程
+
+2、流程如下：用户u1（假设他要发给u2）调用app sdk发送消息到接入系统，接入系统发送消息到分发系统，分发系统发送消息到kafka，业务系统去kafka中消费，将单聊消息存到redis和mysql中。然后以同样的流程响应回复给u1。
+
+然后业务系统将消息发给kafka，分发系统消费到消息，发给接入系统，接入系统发给用户u1对应的app sdk。然后同样的流程返回响应到kafka并更新mysql。

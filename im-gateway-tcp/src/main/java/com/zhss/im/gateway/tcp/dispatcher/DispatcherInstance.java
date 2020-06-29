@@ -2,8 +2,10 @@ package com.zhss.im.gateway.tcp.dispatcher;
 
 import com.zhss.im.common.Constants;
 import com.zhss.im.common.Request;
+import com.zhss.im.common.Response;
 import com.zhss.im.protocol.AuthenticateRequestProto;
-import com.zhss.im.protocol.AuthenticateResponseProto;
+import com.zhss.im.protocol.MessagePushResponseProto;
+import com.zhss.im.protocol.MessageSendRequestProto;
 import io.netty.channel.socket.SocketChannel;
 
 /**
@@ -29,6 +31,18 @@ public class DispatcherInstance {
                 Constants.SEQUENCE_DEFAULT,
                 authenticateRequest.toByteArray());
         socketChannel.writeAndFlush(request.getBuffer());
+    }
+
+    /**
+     * 向分发系统发送单聊消息请求
+     * @param request
+     */
+    public void sendMessage(Request request) {
+        socketChannel.writeAndFlush(request.getBuffer());
+    }
+
+    public void pushMessageResponse(Response response) {
+        socketChannel.writeAndFlush(response.getBuffer());
     }
 
     public SocketChannel getSocketChannel() {

@@ -26,6 +26,9 @@ public class DispatcherServer {
         // 应该是让分发系统用的是Netty的服务端的代码，去监听一个端口号，等待人家跟他建立连接
         // 但凡建立好连接之后，就可以把接入系统的长连接缓存在这个组件里
 
+        KafkaManager kafkaManager = KafkaManager.getInstance();
+        kafkaManager.init();
+
         EventLoopGroup connectionThreadGroup = new NioEventLoopGroup();
         EventLoopGroup ioThreadGroup = new NioEventLoopGroup();
 
